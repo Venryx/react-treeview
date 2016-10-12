@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react';
+import {PropTypes} from "react";
 
 class TreeView extends BaseComponent {
 	/*static propTypes = {
@@ -11,39 +11,48 @@ class TreeView extends BaseComponent {
 
 	constructor(props) {
 	    super(props);
-	    this._bind("onArrowClick", "onClick");
-		this.state = {collapsed: this.props.defaultCollapsed};
+		var {defaultCollapsed} = this.props;
+		this.state = {collapsed: defaultCollapsed};
 	}
 
 	onArrowClick(...args) {
-		this.setState({collapsed: !this.state.collapsed});
-		if (this.props.onArrowClick) this.props.onArrowClick(...args);
+		var {collapsible, onArrowClick} = this.props;
+		var {collapsed} = this.state;
+	    var newCollapsed = collapsed;
+	    if (collapsible) {
+	        newCollapsed = !collapsed;
+	        this.setState({collapsed: newCollapsed});
+	    }
+	    onArrowClick && onArrowClick(newCollapsed);
 	}
 
 	onClick(...args) {
-		if (this.props.onClick) this.props.onClick(...args);
+		var {onClick} = this.props;
+		onClick && onClick(...args);
 	}
 
 	render() {
-		//var {collapsed = this.state.collapsed, className, itemClassName, nodeLabel, children, selected, style, ...rest} = this.props;
-		var {collapsed = this.state.collapsed, className, itemClassName, titleElement, nodeLabel, children, selected, style} = this.props;
+		var {collapsible, className, itemClassName, titleElement, nodeLabel, children, selected, style, titleStyle} = this.props;
+		var {collapsed} = this.state;
 
-		let containerClassName = 'tree-view_children';
+		let containerClassName = "tree-view_children";
 		if (collapsed)
-			containerClassName += ' tree-view_children-collapsed';
+			containerClassName += " tree-view_children-collapsed";
 
-	    var hasChildren = children && children.length;
 	    var iconSize = 8; // with padding: 12
 		return (
 			<div className={"tree-view " + className} style={style}>
 				<div onClick={this.onArrowClick}
-					style={{
-						display: "inline-block",
-						boxSizing: "content-box", width: iconSize, height: iconSize, verticalAlign: "top", marginTop: 2, padding: 2,
-						userSelect: "none", WebkitUserSelect: "none", backgroundPosition: 2, backgroundRepeat: "no-repeat", backgroundSize: 8, cursor: "pointer",
-						backgroundImage: hasChildren && ("url(/Main/Packages/Images/Buttons/" + (collapsed ? "Right" : "Down") + ".png)")
-					}}/>
-				<div className={"tree-view_item " + itemClassName} onClick={this.onClick}
+					style={E(
+						{
+							display: "inline-block",
+							boxSizing: "content-box", width: iconSize, height: iconSize, verticalAlign: "top", marginTop: 2, padding: 2,
+							userSelect: "none", WebkitUserSelect: "none", backgroundPosition: 2, backgroundRepeat: "no-repeat", backgroundSize: 8, cursor: "pointer",
+						},
+						collapsible && {backgroundImage: "url(/Main/Packages/Images/Buttons/" + (collapsed ? "Right" : "Down") + ".png)"},
+						!collapsible && {opacity: 0},
+					)}/>
+				<div className={"tree-view_item " + itemClassName} onClick={this.onClick} style={titleStyle}
 					style={{display: "inline-block", width: "calc(100% - 12px)", backgroundColor: selected ? "rgba(44, 79, 122, .5)" : null}}>
 					{titleElement || nodeLabel}
 				</div>
