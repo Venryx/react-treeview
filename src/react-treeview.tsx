@@ -1,6 +1,8 @@
 import {PropTypes} from "react";
+import {BaseComponent} from "../Frame/General/ReactGlobals";
+import {E} from "../Frame/General/Globals";
 
-class TreeView extends BaseComponent {
+class TreeView extends BaseComponent<any, {collapsed}> {
 	/*static propTypes = {
 		collapsed: PropTypes.bool,
 		defaultCollapsed: PropTypes.bool,
@@ -52,12 +54,17 @@ class TreeView extends BaseComponent {
 						collapsible && {backgroundImage: "url(/Main/Packages/Images/Buttons/" + (collapsed ? "Right" : "Down") + ".png)"},
 						!collapsible && {opacity: 0},
 					)}/>
-				<div className={"tree-view_item " + itemClassName} onClick={this.onClick} style={titleStyle}
-					style={{display: "inline-block", width: "calc(100% - 12px)", backgroundColor: selected ? "rgba(44, 79, 122, .5)" : null}}>
+				<div className={"tree-view_item " + itemClassName} onClick={this.onClick}
+					style={E(
+						titleStyle,
+						{display: "inline-block", width: "calc(100% - 12px)",
+							backgroundColor: selected ? "rgba(44, 79, 122, .5)" : null}
+					)}>
 					{titleElement || nodeLabel}
 				</div>
-				<div className={containerClassName}>
-					{collapsed ? null : children}
+				<div className={containerClassName} style={E(collapsed && {display: "none"})}>
+					{/*collapsed ? null : children*/}
+					{children}
 				</div>
 			</div>
 		);
